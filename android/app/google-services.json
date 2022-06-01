@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "378301235627",
+    "project_id": "assigment-84c65",
+    "storage_bucket": "assigment-84c65.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378301235627:android:2ec0dba1736fa292b852ee",
+        "android_client_info": {
+          "package_name": "com.example.genotechies"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378301235627-ol6acdgm897qv1em9np2mput8it0jage.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.genotechies",
+            "certificate_hash": "3387959a2e6982a6cfe2a3e5b36cca040caf77f6"
+          }
+        },
+        {
+          "client_id": "378301235627-t83sqj74i632gi5uci14kq23ja2etv5u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTgYl3hkdSoS3ZQRMRmlT01ldyFM1Xbfg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378301235627-t83sqj74i632gi5uci14kq23ja2etv5u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
