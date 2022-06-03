@@ -5,7 +5,9 @@ class ExceptionManagement {
       {required BuildContext context, required String error}) {
     switch (error) {
       case "LateInitializationError: Field 'email' has not been initialized.":
-        return ('Please Fillout the email.');
+        return ('Please Fill out the email.');
+      case "LateInitializationError: Field 'password' has not been initialized.":
+        return ('Please Fill Password.');
 
       case '[firebase_auth/invalid-email] The email address is badly formatted.':
         return 'E-mail address format is wrong.';
@@ -23,7 +25,8 @@ class ExceptionManagement {
         return 'Network error.';
 
       case '[firebase_auth/unknown] Given String is empty or null':
-        return 'Please fill out the credentials.Network error.';
+        return 'Please fill out the credentials Or Network error.';
+
       case "[firebase_auth/email-already-in-use] The email address is already in use by another account.":
         return ('The email is already registered.');
 

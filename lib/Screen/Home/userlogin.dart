@@ -1,80 +1,27 @@
+
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_toastr/flutter_toastr.dart';
-import 'package:genotechies/Screen/Home/userlogin.dart';
-import 'package:genotechies/Screen/login_screen/otp_screen.dart';
-import 'package:genotechies/widgets/error.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
-import '../Screen/Home/home.dart';
+import '../../widgets/error.dart';
 
-
-class SignupWidget extends StatefulWidget {
-  const SignupWidget({Key? key}) : super(key: key);
+class UserLogin extends StatefulWidget {
+  const UserLogin({Key? key}) : super(key: key);
 
   @override
-  State<SignupWidget> createState() => _SignupWidgetState();
+  State<UserLogin> createState() => _UserLoginState();
 }
 
-class _SignupWidgetState extends State<SignupWidget> {
+class _UserLoginState extends State<UserLogin> {
   bool _isObscure = true;
   bool _isObscure2 = true;
 
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _otpController = TextEditingController();
   final TextEditingController _pswrdController = TextEditingController();
   final TextEditingController _cpswrdController = TextEditingController();
   EmailAuth emailAuth = EmailAuth(sessionName: "Sample session");
   final FirebaseAuth auth = FirebaseAuth.instance;
-
-  void verify() async {
-    // ignore: avoid_print
-    print(emailAuth.validateOtp(
-        recipientMail: _emailController.value.text,
-        userOtp: _otpController.value.text));
-  }
-
-  void sendOtp() async {
-    var result = await emailAuth.sendOtp(
-        recipientMail: _emailController.value.text, otpLength: 5).whenComplete(() => null);
-    if (result) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => OtpScreen(_otpController.text, _emailController.text, _cpswrdController.text)));
-    }
-  }
-
-// google login..........................
-
-  Future <void> googleSignIn()async{
-    final googlesigninIn = GoogleSignIn();
-
-    final googleAccount = await googlesigninIn.signIn();
-    if(googleAccount != null){
-      final googleAuth = await googleAccount.authentication;
-      if(googleAuth.idToken != null && googleAuth.accessToken != null){
-        try {
-
-          await auth.signInWithCredential(
-            GoogleAuthProvider.credential(
-                idToken: googleAuth.idToken,
-                accessToken: googleAuth.accessToken),
-          );
-          if (FirebaseAuth.instance.currentUser != null) {
-
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
-          }
-        }on FirebaseAuthException catch(error){
-          print (error.message);
-
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,7 +49,7 @@ class _SignupWidgetState extends State<SignupWidget> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
-                    label: Text('Email'), icon: Icon(Icons.alternate_email)),
+                    label: Text('User name'), icon: Icon(Icons.alternate_email)),
               ),
               const SizedBox(
                 height: 30,
@@ -153,7 +100,7 @@ class _SignupWidgetState extends State<SignupWidget> {
 
                         try{
                           if(_pswrdController.text == _cpswrdController.text){
-                            sendOtp();
+
                           }
                           else {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -169,7 +116,7 @@ class _SignupWidgetState extends State<SignupWidget> {
                               duration: FlutterToastr.lengthShort,
                               position: FlutterToastr.bottom);
                         }
-                     },
+                      },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
                               vertical: 12, horizontal: 25),
@@ -181,50 +128,9 @@ class _SignupWidgetState extends State<SignupWidget> {
                         style: TextStyle(color: Colors.white, fontSize: 15),
                       ),
                     ),
-                    Row(
-                      children: [
-                        const Text(
-                          'Or',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 20,
-                        ),
-                        CircleAvatar(
-                          radius: 25,
-                          backgroundColor: Colors.grey,
-                          child: IconButton(
-                            onPressed: (){
-                              googleSignIn();
-                            },
-                            icon: const ImageIcon(
-                                AssetImage('assets/google.png')),
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-
                   ],
                 ),
               ),
-                const SizedBox(height: 30.0,),
-
-                TextButton(
-                  onPressed: () => {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        // ignore: prefer_const_constructors
-                        builder: (context) => UserLogin(),
-                      ),
-                    ),
-                  },
-                  child: const Text(
-                    'Login with Username Password',
-                    style: TextStyle(fontSize: 14, color: Colors.blueAccent),
-                  ),
-                ),
             ],
           ),
         ),

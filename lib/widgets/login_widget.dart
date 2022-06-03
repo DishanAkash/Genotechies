@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:genotechies/Screen/Home/home.dart';
-import 'package:genotechies/Screen/Home/sreen.dart';
 import 'package:genotechies/widgets/error.dart';
 import 'package:genotechies/widgets/messege.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -139,6 +138,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 height: 80,
               ),
               TextFormField(
+                validator: (value) => value!.isEmpty ? 'Field cannot be empty':null,
                 onChanged: (value){
                   email=value;
                 },
@@ -150,6 +150,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                 height: 30,
               ),
               TextFormField(
+                validator: (value) => value!.isEmpty ? 'Field cannot be empty':null,
                 onChanged: (value){
                   password=value;
                 },
