@@ -1,8 +1,10 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_auth/email_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_toastr/flutter_toastr.dart';
+import 'package:genotechies/Screen/Home/home.dart';
 
 import '../../widgets/error.dart';
 
@@ -22,8 +24,11 @@ class _UserLoginState extends State<UserLogin> {
   final TextEditingController _cpswrdController = TextEditingController();
   EmailAuth emailAuth = EmailAuth(sessionName: "Sample session");
   final FirebaseAuth auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
+
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -49,7 +54,7 @@ class _UserLoginState extends State<UserLogin> {
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
-                    label: Text('User name'), icon: Icon(Icons.alternate_email)),
+                    label: Text('User name'), icon: Icon(Icons.account_box)),
               ),
               const SizedBox(
                 height: 30,
@@ -100,7 +105,31 @@ class _UserLoginState extends State<UserLogin> {
 
                         try{
                           if(_pswrdController.text == _cpswrdController.text){
+                            FirebaseFirestore.instance
+                                .collection('Users')
+                                .add({
+                              "username": _emailController.text,
+                              "password": _cpswrdController.text,
+                            }).whenComplete(() async {
+                              try {
+                                await FirebaseAuth.instance.signInAnonymously().whenComplete(() {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(builder: (context) => HomeScreen()),
+                                  );
+                                });
 
+
+                              } catch (e) {
+                                // pr.hide();
+                                // _services.showMyDialog(
+                                //     context: context,
+                                //     title: 'Login Failed',
+                                //     message: '${e.toString()}');
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(SnackBar(content: Text('${e.toString()}')));
+                                print(e.toString())
+                                ;              }
+                            });
                           }
                           else {
                             ScaffoldMessenger.of(context).showSnackBar(

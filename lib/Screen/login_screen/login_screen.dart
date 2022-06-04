@@ -1,5 +1,8 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:genotechies/Screen/Home/home.dart';
 import 'package:genotechies/widgets/login_widget.dart';
 import 'package:genotechies/widgets/singup_widget.dart';
 
@@ -11,6 +14,11 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Future<QuerySnapshot> getAdminCredentials() {
+    var result = FirebaseFirestore.instance.collection('Users').get();
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
 

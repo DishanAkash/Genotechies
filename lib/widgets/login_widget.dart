@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 
   final FCM pushNotification =FCM();
+
 
 
   @override
@@ -96,6 +98,9 @@ class _LoginWidgetState extends State<LoginWidget> {
     }
   }
 
+
+
+// Facebook login..................
   Future<UserCredential> signInWithFacebook() async {
     // Trigger the sign-in flow
     final LoginResult loginResult = await FacebookAuth.instance.login(
@@ -113,8 +118,55 @@ class _LoginWidgetState extends State<LoginWidget> {
     return FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
   }
 
+
+
+// user login......................
+  Future<QuerySnapshot> getAdminCredentials() {
+    var result = FirebaseFirestore.instance.collection('Users').get();
+    return result;
+  }
+  _login(username, password) async {
+    getAdminCredentials().then((value) async {
+      value.docs.forEach((element) async {
+        if (element.get('username') == username)
+        {
+           if (element.get('password') == password) {
+            try {
+              await FirebaseAuth.instance.signInAnonymously().whenComplete(() {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                );
+              });
+
+
+            } catch (e) {
+              // pr.hide();
+              // _services.showMyDialog(
+              //     context: context,
+              //     title: 'Login Failed',
+              //     message: '${e.toString()}');
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text(e.toString())));
+
+            }
+
+
+          }else{
+
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Invalid Password')));
+          }
+
+        }else {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Invalid Username')));
+        }
+      });
+    });
+  }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -140,11 +192,14 @@ class _LoginWidgetState extends State<LoginWidget> {
               TextFormField(
                 validator: (value) => value!.isEmpty ? 'Field cannot be empty':null,
                 onChanged: (value){
-                  email=value;
+
+                  setState(() {
+                    email=value;
+                  });
                 },
                 decoration: const InputDecoration(
 
-                    label: Text('Email'), icon: Icon(Icons.alternate_email)),
+                    label: Text('Email or Username'), icon: Icon(Icons.alternate_email)),
               ),
               const SizedBox(
                 height: 30,
@@ -152,7 +207,9 @@ class _LoginWidgetState extends State<LoginWidget> {
               TextFormField(
                 validator: (value) => value!.isEmpty ? 'Field cannot be empty':null,
                 onChanged: (value){
-                  password=value;
+                  setState(() {
+                    password=value;
+                  });
                 },
                 obscureText: _isObscure,
                 decoration: InputDecoration(
@@ -175,7 +232,13 @@ class _LoginWidgetState extends State<LoginWidget> {
                   children: [
                     ElevatedButton(
                       onPressed: () {
+                        bool emailvalid = RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email);
+                        if(emailvalid){
                         login();
+                        }else{
+
+                          _login(email, password);
+                        }
                       },
                       style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
