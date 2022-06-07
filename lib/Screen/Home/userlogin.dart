@@ -106,8 +106,8 @@ class _UserLoginState extends State<UserLogin> {
                         try{
                           if(_pswrdController.text == _cpswrdController.text){
                             FirebaseFirestore.instance
-                                .collection('Users')
-                                .add({
+                                .collection('Users').doc(_emailController.text)
+                                .set({
                               "username": _emailController.text,
                               "password": _cpswrdController.text,
                             }).whenComplete(() async {

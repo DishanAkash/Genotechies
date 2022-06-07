@@ -63,6 +63,7 @@ class _LoginWidgetState extends State<LoginWidget> {
         FlutterToastr.show(error1, context,
             duration: FlutterToastr.lengthShort,
             position: FlutterToastr.bottom);
+        print(error1);
 
 
        }
@@ -99,7 +100,6 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
 
-
 // Facebook login..................
   Future<UserCredential> signInWithFacebook() async {
     // Trigger the sign-in flow
@@ -121,52 +121,84 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 
 // user login......................
-  Future<QuerySnapshot> getAdminCredentials() {
-    var result = FirebaseFirestore.instance.collection('Users').get();
+
+  Future<DocumentSnapshot> getAdminCredentials(id) {
+    var result = FirebaseFirestore.instance.collection('Users').doc(id).get();
     return result;
   }
-  _login(username, password) async {
-    getAdminCredentials().then((value) async {
-      value.docs.forEach((element) async {
-        if (element.get('username') == username)
-        {
-           if (element.get('password') == password) {
-            try {
-              await FirebaseAuth.instance.signInAnonymously().whenComplete(() {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              });
-
-
-            } catch (e) {
-              // pr.hide();
-              // _services.showMyDialog(
-              //     context: context,
-              //     title: 'Login Failed',
-              //     message: '${e.toString()}');
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text(e.toString())));
-
+  // _login(username, password) async {
+  //   getAdminCredentials().then((value) async {
+  //     value.docs.forEach((element) async {
+  //       if (element.get('username') == username)
+  //       {
+  //          if (element.get('password') == password) {
+  //           try {
+  //             await FirebaseAuth.instance.signInAnonymously().whenComplete(() {
+  //               Navigator.of(context).push(
+  //                 MaterialPageRoute(builder: (context) => HomeScreen()),
+  //               );
+  //             });
+  //
+  //
+  //           } catch (e) {
+  //             // pr.hide();
+  //             // _services.showMyDialog(
+  //             //     context: context,
+  //             //     title: 'Login Failed',
+  //             //     message: '${e.toString()}');
+  //             ScaffoldMessenger.of(context)
+  //                 .showSnackBar(SnackBar(content: Text(e.toString())));
+  //
+  //           }
+  //
+  //
+  //         }else{
+  //
+  //           ScaffoldMessenger.of(context)
+  //               .showSnackBar(const SnackBar(content: Text('Invalid Password')));
+  //         }
+  //
+  //       }else {
+  //         ScaffoldMessenger.of(context)
+  //             .showSnackBar(const SnackBar(content: Text('Invalid Username')));
+  //         // FlutterToastr.show("Error", context,
+  //         //     duration: FlutterToastr.lengthShort,
+  //         //     position: FlutterToastr.bottom);
+  //
+  //       }
+  //     });
+  //   });
+  // }
+  @override
+  Widget build(BuildContext context) {
+    _login({username, password}) async {
+      getAdminCredentials(username).then((value) async {
+        if (value.exists) {
+          if ((value.data() as dynamic)['username'] == username) {
+            if ((value.data() as dynamic)['password'] == password) {
+              try {
+                            await FirebaseAuth.instance.signInAnonymously().whenComplete(() {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (context) => HomeScreen()),
+                              );
+                            });
+              } catch (e) {
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text('Login Failed')));
+              }
+              return;
             }
-
-
-          }else{
-
             ScaffoldMessenger.of(context)
                 .showSnackBar(const SnackBar(content: Text('Invalid Password')));
+            return;
           }
-
-        }else {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text('Invalid Username')));
         }
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Invalid Username')));
       });
-    });
-  }
-  @override
-  Widget build(BuildContext context) {
-
+    }
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
@@ -237,7 +269,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         login();
                         }else{
 
-                          _login(email, password);
+                          _login(username: email, password: password);
                         }
                       },
                       style: ElevatedButton.styleFrom(

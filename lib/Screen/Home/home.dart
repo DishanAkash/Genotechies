@@ -38,7 +38,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(
                     builder: (context) => const LoginScreen()),
                     (route) => false);
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logout Success!')));
           }
         });
     // final GoogleSignIn googleSignIn = new GoogleSignIn();
@@ -57,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
         leading: GestureDetector(
           onTap: (){
             FirebaseAuth.instance.signOut();
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Logout Success!')));
            // googleSignIn.signOut();
           },
           child: const Icon(

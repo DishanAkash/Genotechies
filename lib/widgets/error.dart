@@ -28,7 +28,7 @@ class ExceptionManagement {
         return 'Please fill out the credentials Or Network error.';
 
       case "[firebase_auth/email-already-in-use] The email address is already in use by another account.":
-        return ('The email is already registered.');
+        return 'The email is already registered.';
 
 
       default:

@@ -168,6 +168,7 @@ class _SignupWidgetState extends State<SignupWidget> {
                           FlutterToastr.show(error1, context,
                               duration: FlutterToastr.lengthShort,
                               position: FlutterToastr.bottom);
+
                         }
                      },
                       style: ElevatedButton.styleFrom(
