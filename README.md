@@ -1,6 +1,6 @@
 # genotechies
 
-A new Flutter project.
+A new Flutter project. This includes authentication methods we use in flutter(Google authentication, FaceBook authentication). Also this include Email verification using OTP code. In this project has a firbase push notification methods.      
 
 ## Getting Started
 
